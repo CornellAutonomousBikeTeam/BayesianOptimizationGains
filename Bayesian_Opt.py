@@ -1,13 +1,13 @@
 import pysmac
 import numpy
 import bikeState
-# import bikeSim
 from constants import *
 
 
+#Overview: Outputs a new bike state object and the lean angle rate associated with the new bike state object after an inputted bike passes through the bike dynamics - similar to code in BikeSim.py
+#Requires: a current bike object, a steerD, and the constants associated with the gains which should be real values
+#Retruns: a new bike state object after it passes through bike dynamics, the updated lean angle rate
 def new_state(bike, steerD, c1, c2, c3):
-    """ Returns new bike state object after it passes through bike dynamics """
-    # Get navigation command
     rhs_result = bike.rhs(steerD, c1, c2, c3)
     u = rhs_result[0]
     values = rhs_result[1]
@@ -21,8 +21,10 @@ def new_state(bike, steerD, c1, c2, c3):
     new_state = bikeState.Bike(new_xB, new_yB, new_phi, new_psi, new_delta, new_w_r, new_v)
     return new_state, new_w_r
 
+#Updates the overall balance score by simulating a bike with the given constants associated with the gains for
+#a certain number of iterations, adding the square of the lean angle rate for that bike simulation to the
+#score, and taking the square root of the score to get the balance score
 def balance_score(c1, c2, c3):
-    # taken from Navigation_node to initialize a new bike
     bike = bikeState.Bike(0, -10, 0.1, numpy.pi/3, 0, 0, 3.57)
     score = 0
     
@@ -56,7 +58,7 @@ opt = pysmac.SMAC_optimizer()
 # Then, call its minimize method with (at least) the three mandatory parameters
 value, parameters = opt.minimize(
                                  balance_score, # the function to be minimized
-                                 100,            # the number of function calls allowed
+                                 100,           # the number of function calls allowed
                                  parameters)    # the parameter dictionary
 
 
