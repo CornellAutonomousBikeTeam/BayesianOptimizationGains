@@ -1,0 +1,7 @@
+docutils>=0.3
+setuptools
+numpy
+pynisher
+
+[analyzer]
+matplotlib

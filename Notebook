@@ -1,0 +1,88 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "import pysmac\n",
+    "import numpy\n",
+    "\n",
+    "\n",
+    "def balance_score(c1, c2, c3):\n",
+    "    x = [0, 9, 10]\n",
+    "    y = [0, 0, 0]\n",
+    "    delta0 = 0\n",
+    "    phi0 = 0\n",
+    "    v = 1\n",
+    "    ks = [c1, c2, c3]\n",
+    "    (success, state) = mainNavigation(x,y,v,delta0,phi0,ks,0)\n",
+    "    phidot = state[:,5]\n",
+    "    val=(numpy.sqrt(numpy.sum(phidot**2)))\n",
+    "    return(val)\n",
+    "\n",
+    "\n",
+    "parameters=dict(\\\n",
+    "                # x1 is a continuous ('real') parameter between -5 and 5.\n",
+    "                # The default value/initial guess is 5.\n",
+    "                c1=('real',       [235, 245], 240),\n",
+    "                \n",
+    "                # x2 can take only integral values, but range and initial\n",
+    "                # guess are identical to x1.\n",
+    "                c2=('real',    [125, 135], 130),\n",
+    "                \n",
+    "                # x3 is encoded as a categorical parameter. Variables of\n",
+    "                # this type can only take values from a finite set.\n",
+    "                # The actual values can be numeric or strings.\n",
+    "                c3=('real',[-10, -.1], -5)\n",
+    "                \n",
+    "                )\n",
+    "# Note: the definition of x3 and x4 is only to demonstrate the different\n",
+    "# types of variables pysmac supports. Here these definitions are overly\n",
+    "# complicated for this toy model. For example, the definitions of x2 and\n",
+    "# x3 are equivalent, but the purpose of this example is not to show a\n",
+    "# realistic use case\n",
+    "\n",
+    "\n",
+    "# The next step is to create a SMAC_optimizer object\n",
+    "opt = pysmac.SMAC_optimizer()\n",
+    "\n",
+    "# Then, call its minimize method with (at least) the three mandatory parameters\n",
+    "value, parameters = opt.minimize(\n",
+    "                                 balance_score, # the function to be minimized\n",
+    "                                 50,          # the number of function calls allowed\n",
+    "                                 parameters)    # the parameter dictionary\n",
+    "\n",
+    "\n",
+    "# the return value is a tuple of the lowest function value and a dictionary\n",
+    "# containing corresponding parameter setting.\n",
+    "print(('Lowest function value found: %f'%value))\n",
+    "print(('Parameter setting %s'%parameters))"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 2",
+   "language": "python",
+   "name": "python2"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 2
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython2",
+   "version": "2.7.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
